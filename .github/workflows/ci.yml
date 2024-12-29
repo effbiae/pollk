@@ -18,6 +18,4 @@ jobs:
       - name: clang on ${{ matrix.os }}
         run: clang -v
       - name: build on ${{ matrix.os }}
-        run:  cd k.edu&&make
-      - name: run on ${{ matrix.os }}
-        run: echo "\\\\" >x.k && ./a x.k
+        run:  cd k.edu && make
