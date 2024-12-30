@@ -17,5 +17,7 @@ jobs:
          submodules: 'true'
       - name: clang on ${{ matrix.os }}
         run: clang -v
+      - name: clang on ${{ matrix.os }}
+        run: clang -dM -E - </dev/null
       - name: build on ${{ matrix.os }}
         run:  cd k.edu && make
