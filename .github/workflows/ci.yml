@@ -2,22 +2,20 @@ name: CI
 on: # Controls when the workflow will run
  push:
   branches: [ "main" ]
- pull_request:
-  branches: [ "main" ]
  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 jobs:
   build:
-   runs-on: ${{ matrix.os }}
-   strategy:
-    matrix:
-     os: [macos-latest] #[ubuntu-latest, macos-latest]
+   runs-on: macos-latest
+   permissions: write-all
    steps:
       - uses: actions/checkout@v4
         with:
          submodules: 'true'
-      - name: clang on ${{ matrix.os }}
+      - name: clang
         run: clang -v
-      - name: clang on ${{ matrix.os }}
+      - name: clang
         run: clang -dM -E - </dev/null
-      - name: build on ${{ matrix.os }}
-        run:  cd k.edu && make
+      - name: build
+        run: cd k.edu # && make
+      - name: Tag branch
+        run: cd k.edu && git tag -f mac && git push -f origin mac
