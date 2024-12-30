@@ -1,0 +1,2 @@
+crontab -e #will edit your crontab
+journalctl |grep CRON #will show 
