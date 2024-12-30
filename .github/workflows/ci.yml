@@ -1,4 +1,4 @@
-name: CI
+name: MacOS build
 on: # Controls when the workflow will run
  push:
   branches: [ "main" ]
@@ -16,6 +16,4 @@ jobs:
       - name: clang
         run: clang -dM -E - </dev/null
       - name: build
-        run: cd k.edu # && make
-      - name: Tag branch
-        run: cd k.edu && git tag -f mac && git push -f origin mac
+        run: cd k.edu && make
