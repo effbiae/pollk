@@ -1,12 +1,16 @@
 #!/bin/bash
+# polls shakti.com for changes to k.zip using ETag header
+# push any new version to github
+# i have this run on 5 minute intervals in my crontab
+set -e
 url=shakti.com/edu/k.zip
-g=git@github.com:effbiae/k.edu.git
-curl="curl -s -S"
-etag  (){ $curl -I $url |grep ETag |grep -o '".*"' >etag;}
-new   (){ $curl -I $url --header If-None-Match:\ `cat etag`|head -1|grep 200;}
+curl="curl -s -S" #make curl quiet
+etag  (){ $curl -I $url |grep ETag |grep -o '".*"' >etag;} #get the ETag for current k.zip
+new   (){ $curl -I $url --header If-None-Match:\ $(cat etag)|head -1|grep 200;} #test if there is a new k.zip
 get   (){ $curl $url >k.zip;}
-rmed  (){ comm -23 <(cd k.edu; echo *|tr -s ' ' '\n'|sort) <(echo $(zipinfo -1 k.zip)|tr -s ' ' '\n'|sort);}
-gitit (){ (rm=$(rmed); cd k.edu && (git rm $rm; unzip -o ../k.zip; git add .; git commit -m "$(date -u)"; git push));}
+lszip (){ zipinfo -1 k.zip;} #list files in zip
+rmed  (){ comm -23 <(cd k.edu; git ls-files|sort) <(lszip|sort);} #find git files in k.edu that aren't in k.zip (we want to git rm them)
+gitit (){ (rm=$(rmed); fs=$(lszip); cd k.edu; if [ "x$rm" != x ]; then git rm $rm; fi; unzip -o ../k.zip; git add $fs; git commit -m "$(date -u)"; git push);}
 bump  (){ git add etag; git commit -m "$(date -u)"; git push; }
 if [ ! -e etag ]; then etag; fi
 if new; then set -x; get; gitit; etag; bump; fi
