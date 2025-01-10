@@ -11,6 +11,6 @@ get   (){ $curl $url >k.zip;}
 lszip (){ zipinfo -1 k.zip;} #list files in zip
 rmed  (){ comm -23 <(cd k.edu; git ls-files|sort) <(lszip|sort);} #find git files in k.edu that aren't in k.zip (we want to git rm them)
 gitit (){ (rm=$(rmed); fs=$(lszip); cd k.edu; if [ "x$rm" != x ]; then git rm $rm; fi; unzip -o ../k.zip; git add $fs; git commit -m "$(date -u)"; git push);}
-bump  (){ git add etag; git commit -m "$(date -u)"; git push; }
+bump  (){ git commit -am "$(date -u)"; git push; }
 if [ ! -e etag ]; then etag; fi
 if new; then set -x; get; gitit; etag; bump; fi
