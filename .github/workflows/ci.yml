@@ -21,8 +21,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-         if ! grep `cd k.edu && git rev-parse HEAD` mac; then 
-          gh release create latest --repo="$GITHUB_REPOSITORY" --title=mac-latest k.edu/a
+         if ! grep `cd k.edu && git rev-parse HEAD` mac; then
+          gh release create mac-latest --repo="$GITHUB_REPOSITORY" --title=mac-latest k.edu/a
          fi
       - name: mac add
         run: |
