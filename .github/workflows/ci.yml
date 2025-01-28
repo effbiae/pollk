@@ -17,6 +17,13 @@ jobs:
         run: clang -dM -E - </dev/null
       - name: build
         run: if ! grep `cd k.edu && git rev-parse HEAD` mac; then cd k.edu && make; fi
+      - name: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+         if ! grep `cd k.edu && git rev-parse HEAD` mac; then 
+          gh release create latest --repo="$GITHUB_REPOSITORY" --title=mac-latest k.edu/a
+         fi
       - name: mac add
         run: |
          if ! grep `cd k.edu && git rev-parse HEAD` mac; then 
