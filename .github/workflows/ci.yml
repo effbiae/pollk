@@ -16,18 +16,12 @@ jobs:
       - name: clang
         run: clang -dM -E - </dev/null
       - name: build
-        run: if ! grep `cd k.edu && git rev-parse HEAD` mac; then cd k.edu && make; fi
-      - name: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-         if ! grep `cd k.edu && git rev-parse HEAD` mac; then
-          gh release create mac-latest k.edu/a #--repo="$GITHUB_REPOSITORY" 
-         fi
-      - name: mac add
-        run: |
-         if ! grep `cd k.edu && git rev-parse HEAD` mac; then 
-          (cd k.edu && git rev-parse HEAD>>../mac)
+         (cd k.edu && git rev-parse HEAD>../head)
+         if ! grep `cat head` mac; then 
+          cd k.edu && make; cd ..
+          gh release create --target `cat head` mac-latest k.edu/a
+          cat head>>mac
           git config --global user.name 'github-action'
           git config --global user.email 'github-action@users.noreply.github.com'
           git add mac; git commit -m "$(date -u)"; git push
